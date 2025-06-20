@@ -1,0 +1,1 @@
+export const Checkbox = (props) => <div>{props.children}</div>;

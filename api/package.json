@@ -1,0 +1,11 @@
+
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@azure/storage-blob": "^12.10.0",
+    "@azure/cosmos": "^3.15.0",
+    "uuid": "^9.0.0"
+  }
+}

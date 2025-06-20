@@ -1,0 +1,1 @@
+export const Textarea = (props) => <div>{props.children}</div>;
