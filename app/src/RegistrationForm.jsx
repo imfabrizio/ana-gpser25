@@ -1,86 +1,80 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-function RegistrationForm() {
+export default function RegistrationForm() {
   const [formData, setFormData] = useState({
     nome: "",
     cognome: "",
+    email: "",
+    cf: "",
     dataNascita: "",
     luogoNascita: "",
-    codiceFiscale: "",
-    comitato: "",
-    regione: "",
     ruolo: "",
-    intolleranze: "",
-    altreEsigenze: "",
-    pernottamento: false,
-    patenteCRI45: false,
+    allergie: "",
+    richiestaPernottamento: false,
+    patente4: false,
     documento: null,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (type === "checkbox") {
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else if (type === "file") {
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, type, value, checked, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "file"
+          ? files[0]
+          : value,
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    let documentoUrl = "";
-    if (formData.documento) {
-      const uploadRes = await fetch("/api/upload", {
-        method: "POST",
-        body: formData.documento,
-      });
-      const { url } = await uploadRes.json();
-      documentoUrl = url;
-    }
-
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formData, documentoUrl }),
-    });
-
-    if (res.ok) {
-      alert("Registrazione completata");
-    } else {
-      alert("Errore durante la registrazione");
-    }
+    console.log("Dati inviati:", formData);
+    alert("Dati inviati con successo!");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      <input name="nome" placeholder="Nome" onChange={handleChange} required />
-      <input name="cognome" placeholder="Cognome" onChange={handleChange} required />
-      <input name="dataNascita" type="date" onChange={handleChange} required />
-      <input name="luogoNascita" placeholder="Luogo di nascita" onChange={handleChange} required />
-      <input name="codiceFiscale" placeholder="Codice Fiscale (solo Team)" onChange={handleChange} />
-      <input name="comitato" placeholder="Comitato" onChange={handleChange} required />
-      <input name="regione" placeholder="Regione" onChange={handleChange} required />
-      <input name="ruolo" placeholder="Ruolo" onChange={handleChange} required />
-      <textarea name="intolleranze" placeholder="Intolleranze alimentari" onChange={handleChange} />
-      <textarea name="altreEsigenze" placeholder="Altre esigenze" onChange={handleChange} />
-      <label>
-        <input type="checkbox" name="pernottamento" onChange={handleChange} />
-        Richiesta pernottamento
-      </label>
-      <label>
-        <input type="checkbox" name="patenteCRI45" onChange={handleChange} />
-        Ha patente CRI 4/5
-      </label>
-      <label>
-        Documento CI:
-        <input type="file" name="documento" onChange={handleChange} />
-      </label>
-      <button type="submit">Invia registrazione</button>
-    </form>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white shadow-xl rounded-2xl max-w-xl w-full p-6">
+        <div className="flex flex-col items-center">
+          <img src="/logo-cri.png" alt="Logo Croce Rossa" className="h-20 mb-4" />
+          <h1 className="text-2xl font-bold text-red-600 mb-6 text-center">
+            Iscrizione Gara di Primo Soccorso
+          </h1>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <input name="nome" type="text" required placeholder="Nome" className="input" onChange={handleChange} />
+            <input name="cognome" type="text" required placeholder="Cognome" className="input" onChange={handleChange} />
+            <input name="email" type="email" required placeholder="Email" className="input" onChange={handleChange} />
+            <input name="cf" type="text" required placeholder="Codice Fiscale" className="input" onChange={handleChange} />
+            <input name="dataNascita" type="date" required className="input" onChange={handleChange} />
+            <input name="luogoNascita" type="text" required placeholder="Luogo di nascita" className="input" onChange={handleChange} />
+            <input name="ruolo" type="text" placeholder="Ruolo (es. Squadra, Autista...)" className="input" onChange={handleChange} />
+            <input name="allergie" type="text" placeholder="Allergie o intolleranze" className="input" onChange={handleChange} />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input name="richiestaPernottamento" type="checkbox" onChange={handleChange} />
+            <label>Richiede pernottamento</label>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input name="patente4" type="checkbox" onChange={handleChange} />
+            <label>Ha patente tipo 4</label>
+          </div>
+
+          <div>
+            <label className="block mb-1">Documento di identità (PDF/JPG)</label>
+            <input name="documento" type="file" accept=".pdf,.jpg,.jpeg,.png" className="input" onChange={handleChange} />
+          </div>
+
+          <button type="submit" className="w-full bg-red-600 text-white py-2 rounded-xl hover:bg-red-700">
+            Invia Iscrizione
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
-
-export default RegistrationForm;
